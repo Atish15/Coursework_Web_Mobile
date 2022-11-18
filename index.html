@@ -1,0 +1,367 @@
+<html>
+<head>
+    <title>Group project</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://kit.fontawesome.com/9344f8f6fe.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+
+</head>
+<body>
+
+<div id="list">
+    <div id="up">
+        <input id="search" v-model="newTask" v-on:input="changes" type="text" placeholder="To search" value=newTask
+               v-if="showcart==false">
+        <button id="buttons" v-if="cart.length>0" v-on:click="cartout">{{cart.length}} <i
+                class="fa-solid fa-cart-shopping"></i>{{this.cartinfo}}
+        </button>
+    </div>
+    <div id="rem">
+        <div id="top">
+            <div id="sidenav" v-if="showcart==false">
+                <div>
+                    <p>Sort By:</p>
+                    <input type="checkbox" v-model="sortsubject"><a>Subject</a><br>
+                    <input type="checkbox" v-model="sortlocation"><a>Location</a><br>
+                    <input type="checkbox" v-model="sortprice"><a>Price</a><br>
+                    <input type="checkbox" v-model="sortavailability"><a>Availability</a><br>
+                </div>
+                <br></br>
+                <div>
+                    <input type="checkbox" v-model="sortascending"
+                           value="this.sortascending"><a>Ascending</a><br>
+                    <input type="checkbox" v-model="sortdescending"><a>Descending</a><br>
+                </div>
+                <br>
+                <button id="sortbutton" v-on:click="shw()">Sort</button>
+            </div>
+            <div id="info" v-if="showcart==false && showsearch==false">
+                <h1>Home Page</h1>
+                <div id="box" v-for="product in products">
+                    <div id="boxdetail">
+                        <h3>Subject: {{product.subject}}</h3>
+                        <h3>Location: {{product.location}}</h3>
+                        <h3>Price:<a v-html="poundlogo"></a>{{product.price}}</h3>
+                        <h3>Spaces: {{product.count}}</h3>
+                    </div>
+                    <div id="boximage">
+                        <img v-bind:src="product.imagesrc" width="80" height="70"/>
+                    </div>
+                    <div id="boxbutton">
+                        <button id="enablebutton" v-if="canAddToCart(product)" v-on:click="addToCart(product)">Add To
+                            Cart
+                        </button>
+                        <button id="disablebuttons" v-else disabled="disabled">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            <div id="info" v-if="showcart==false && showsearch==true">
+                <h1>Result</h1>
+                <h2 v-if="searched.length==0">No Result. Search again</h2>
+                <div id="box" v-for="product in searched">
+
+                    <div id="boxdetail">
+                        <h3>Subject: {{product.subject}}</h3>
+                        <h3>Location: {{product.location}}</h3>
+                        <h3>Price: <a v-html="poundlogo"></a>{{product.price}}</h3>
+                        <h3>Spaces: {{product.count}}</h3>
+                    </div>
+                    <div id="boximage">
+                        <img v-bind:src="product.imagesrc" width="80" height="70"/>
+                    </div>
+                    <div id="boxbutton">
+                        <button id="enablebutton" v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add To
+                            Cart
+                        </button>
+                        <button id="disablebuttons" disabled="disabled" v-else>Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="bottom">
+            <div v-if="showcart==true && showsearch==false">
+                <div id="cartinfo">
+                    <h1>Shopping Cart</h1>
+                    <div id="box" v-for="product in minicart" v-if="cartCount(product.id)>0">
+                        <div id="boxdetail">
+                            <h3>Subject: {{product.subject}}</h3>
+                            <h3>Location: {{product.location}}</h3>
+                            <h3>Price: <a v-html="poundlogo"></a>{{product.price}}</h3>
+                            <h3>Total: {{cartCount(product.id)}}</h3>
+                        </div>
+                        <div id="boximage">
+                            <img v-bind:src="product.imagesrc" width="70" height="80"/>
+                        </div>
+                        <div id="boxbutton">
+                            <button id="enablebutton" v-on:click="remove(product)">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="checkout">
+                    <h1>CheckOUT</h1>
+                    <div id="checkoutinfos">
+
+                        <input id="search" v-model="name" v-on:input="checkvalidation" type="text"
+                               placeholder="Your Name" value=name>
+                        <input id="search" v-model="phonenumber" v-on:input="checkvalidation" type="text"
+                               placeholder="Your Phone Number"
+                               value=phonenumber>
+
+                        <button v-on:click="finishcart" v-if="validation">Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="main.js" type="module">
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
