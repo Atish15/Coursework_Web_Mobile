@@ -1,4 +1,4 @@
-import lessonproduct from './lesson.js'
+
 
 let app = new Vue({
     el: '#list',
@@ -7,7 +7,7 @@ let app = new Vue({
         phonenumber: '',
         validation: false,
         cartinfo: 'Go To Cart',
-        products: lessonproduct,
+        products: [],
         cart: [],
         showcart: false,
         minicart: [],
@@ -21,6 +21,21 @@ let app = new Vue({
         sortascending: false,
         sortdescending: false
     },
+
+    created:function(){
+
+            fetch("http://localhost:3000/collections/products").then(function (response){
+                response.json().then(
+                    function (json){
+                        app.products=json;
+                    });
+
+            });
+
+
+        },
+
+
     methods: {
         checkvalidation: function () {
             if (this.name.length != 0 && this.phonenumber.length != 0) {
@@ -31,15 +46,68 @@ let app = new Vue({
                 }
             }
         },
+
         finishcart: function () {
             alert("Order has been placed.For " + this.name + "  ," +
                 "Contact Details: " + this.phonenumber);
+            let ncart=[];
+            let ndat={};
+            for(let b=0;b<this.minicart.length;b++){
+                let rspaces=this.itemCount(this.minicart[b].id);
+                fetch("http://localhost:3000/collections/products/"+this.minicart[b].id,{
+                    method:"PUT",
+                    headers:{
+                        "Content-Type":"application/json",
+                    },
+                    body:JSON.stringify({"count":rspaces})
+
+                }).then(function(response){
+                    response.text().then(
+                        function (text){
+                            console.log(text);
+                        });
+
+                });
+
+
+                ndat={
+                    id:this.minicart[b].id,
+                    subject:this.minicart[b].subject,
+                    location:this.minicart[b].location,
+                    price:this.minicart[b].price,
+                    spaces:this.cartCount(this.minicart[b].id)
+                }
+                ncart.push(ndat);
+            }
+            let newProduct={
+                name: this.name,
+                phonenumber: this.phonenumber,
+                productDetails:ncart,
+            };
+            fetch("http://localhost:3000/collections/order",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                        },
+                body:JSON.stringify(newProduct)
+
+                }).then(function(response){
+                response.text().then(
+                    function (text){
+                        console.log(text);
+                    });
+
+            });
+
+
+
             this.cart = [];
             this.minicart = [];
             this.showpage("home");
             this.name = '';
             this.phonenumber = '';
             this.validation = false;
+
         },
         addToCart: function (product) {
 
@@ -62,6 +130,14 @@ let app = new Vue({
                 }
             }
             return cartcount;
+        },
+        itemCount: function (id) {
+            for (let i = 0; i < this.products.length; i++) {
+                if (this.products[i].id === id) {
+                    return this.products[i].count;
+                }
+            }
+            return 0;
         },
         cartout: function () {
             if (this.showcart) {
@@ -113,28 +189,45 @@ let app = new Vue({
                 this.searched = [];
             } else {
                 this.searched = [];
-                let foundsomething = false;
-                for (let i = 0; i < this.products.length; i++) {
-                    let found = false;
-
-
-
-                    if ((((this.products[i].subject).toUpperCase()).includes((this.newTask).toUpperCase()))) {
-                        this.searched.push(this.products[i]);
-                        this.showpage("search");
-                        found = true;
-                        foundsomething = true;
-                    } else if ((((this.products[i].location).toUpperCase()).includes((this.newTask).toUpperCase())) && found == false) {
-                        this.searched.push(this.products[i]);
-                        this.showpage("search");
-                        found = true;
-                        foundsomething = true;
+               // let foundsomething = false;
+                let searchTerm=this.newTask.replace(/" "/g,"%20");
+                console.log(searchTerm);
+                fetch("http://localhost:3000/collections/products/search?q="+searchTerm,{
+                    method:"GET",
+                    headers:{
+                        "Content-Type":"application/json",
                     }
-                }
-                if (foundsomething == false) {
-                    this.searched = [];
-                    this.showpage("search");
-                }
+
+                }).then(function(response){
+                    response.json().then(
+                        function (json){
+                            let finalSearch=[];
+                            let arr1=[];
+                            let arr2=[];
+                            for(let i=0;i<2;i++){
+                                 arr1=json[0];
+                                 arr2=json[1];
+                            }
+                            for(let i=0;i<arr1.length;i++){
+                                finalSearch.push(arr1[i]);
+                            }
+                            for(let ii=0;ii<arr2.length;ii++) {
+                                let found=false;
+                                for (let i = 0; i < arr1.length; i++) {
+                                    if (arr2[ii].id == arr1[i].id){
+                                        found=true;
+                                    }
+                                        }
+                                if(found==false){
+                                    finalSearch.push(arr2[ii]);
+                                }
+                            }
+                            app.searched=finalSearch;
+                            app.showpage("search");
+                        });
+
+                });
+
             }
 
         },
@@ -314,13 +407,12 @@ let app = new Vue({
 
 
     },
-    computed: {
+      computed: {
+
         poundlogo() {
             return ('<i class="fa-solid fa-sterling-sign"></i>');
 
         },
-
-
     }
 //do the serach and sorting start adding css
 })

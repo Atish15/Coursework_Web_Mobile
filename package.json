@@ -1,0 +1,29 @@
+{
+  "name": "coursework_web_mobile",
+  "version": "1.0.0",
+  "description": "The link for this repository is:\r https://atish15.github.io/Coursework_Web_Mobile/",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Atish15/Coursework_Web_Mobile.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Atish15/Coursework_Web_Mobile/issues"
+  },
+  "homepage": "https://github.com/Atish15/Coursework_Web_Mobile#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "curl": "^0.1.4",
+    "express": "^4.18.2",
+    "mongodb": "^4.13.0",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7",
+    "properties-reader": "^2.2.0"
+  }
+}
